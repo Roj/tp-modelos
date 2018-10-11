@@ -1,5 +1,7 @@
 ## Análisis
 
+### Set-covering
+
 El problema planteado se puede modelar como una variación del problema de
 cobertura de conjuntos. Los conjuntos se pueden ver como los equipos
 periodísticos y los elementos a cubrir los eventos deportivos. Un conjunto
@@ -20,6 +22,50 @@ Cuatro diferencias con el problema canónico de cobertura de conjuntos son:
   por ejemplo, no se puede cubrir una final sin haber cubierto un evento de ese
   deporte.
 
+### Capacidad de cobertura
+En la siguiente tabla se indica la capacidad de cobertura, donde una X marca que 
+ese equipo puede cubrir esa categoría. Se hace una distinción especial para la 
+categoría E que consta de Baile Deportivo y Escalada, por especialistas del 
+primero que no son del segundo. 
+
+| Categoría	|	Equipo 1 	| Equipo 2	| Equipo 3 	| Equipo 4 	| Equipo 5 	|
+|	:---:			|	:---:		 	|	:---:			|	:---:		 	|	:---:			|	:---:		 	|
+|A					|		X				|						|			X			|			X			|			X			|
+|B					|		X				|			X			|			X			|						|			X			|
+|C					|		X				|			X			|			X			|			X			|						|
+|D					|		X				|						|						|			X			|						|
+|E (BD)			|		X				|			X			|						|						|						|
+|E (Esc)		|		X				|						|						|						|						|
+
+Esto es importante porque no tiene sentido contemplar la posibilidad de que un 
+equipo cubra un determinado evento si en realidad no es factible tal opción y 
+tal vez resulte conveniente, en vez de modelar una variable y forzarla a 
+valer 0, directamente no modelarla.
+
+Aplicada a finales, la capacidad de cobertura es más restrictiva y exige que el
+equipo a cubrir cada una posea un especialista de la disciplina. Con el mismo 
+formato se indica la capacidad para cubrir finales por categoría en la siguiente
+tabla.
+
+| Categoría	|	Equipo 1 	| Equipo 2	| Equipo 3 	| Equipo 4 	| Equipo 5 	|
+|	:---:			|	:---:		 	|	:---:			|	:---:		 	|	:---:			|	:---:		 	|
+|A					|		X				|						|						|			X			|			X			|
+|B					|		X				|						|			X			|						|			X			|
+|C					|		X				|			X			|			X			|						|						|
+|D					|		X				|						|						|			X			|						|
+|E (BD)			|						|			X			|						|						|						|
+|E (Esc)		|		X				|						|						|						|						|
+
+
+### Desagregación de datos
+
+*completar con limpieza de los datos cuando esté, comentar sobre no necesidad
+de modelar toda la cosa si separando por sede y día en realidad hay poco*
+
+### Separación de cobertura de eventos y transmisión
+
+*completar cuando el modelo esté más avanzado*
+ 
 ## Objetivo
 
 Determinar si mandar un equipo periodístico (y en ese caso, cuál) a cada 
@@ -31,14 +77,15 @@ olímpicos, en el plazo de duración de los juegos.
 
 * Los canales no tienen errores en ningún momento (por ejemplo, caída de la red
   satelital, problemas con las cámaras, etc).
-* ningún evento deportivo requiere o puede tener
+* Ningún evento deportivo requiere o puede tener
   más de un equipo periodístico. Esto es
   particularmente importante para deportes como ciclismo, triatlón y navegación
   a vela, que son deportes que requieren gran espacio.
 * No es necesario planificar cómo se deberán intercalar los eventos.
 * Los eventos se transmiten en su totalidad (sea o no intercalada) o no se
   transmiten. No se pueden subdividir los eventos en partes de un día de tal
-  manera que se cambie de cobertura.   
+  manera que se cambie de cobertura.
+*	El primer día de transmisión es el 7 de octubre y el último el 18 de octubre.
 
 ### Sobre los eventos deportivos  
 
@@ -54,13 +101,15 @@ olímpicos, en el plazo de duración de los juegos.
   anterior a las finales") no hace distinción entre eventos. Es decir, con sólo
   transmitir un evento ya se pueden transmitir las finales de ese deporte. No es
   necesario, por ejemplo, que las semifinales sean transmitidas.
+* De la misma forma, si un deporte tiene una final sin eventos previos, la
+	restricción se ve anulada.
 * Si algún evento deportivo es intercalable pero se muestra solo (p.ej., porque
   no hay otros eventos en ese momento), no cambia la calidad de transmisión por
-  dedicarle más tiempo de cobertura.   
+  dedicarle más tiempo de cobertura.
 
 ### Sobre los equipos periodísticos  
 
-* Los periodistas especificados se mantienen hasta el final, ninguno se baja
+* Los periodistas especificados se mantienen hasta el final, ninguno se baja y
   ninguno se suma. Esto implica que las especialidades y categorías que pueden
   cubrir no cambian.
 * Un equipo, a priori, puede cubrir cualquier horario necesario. No hay
