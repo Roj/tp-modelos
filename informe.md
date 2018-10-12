@@ -190,8 +190,6 @@ $$
     \mathrm{Y}_{j,d,h_1,h_2} \times \mathrm{Q}_d^f
 $$
 
-**falta agregar el aumento por especialista**
-
 ### Restricciones
 
 Un evento no puede estar cubierto por más de un equipo:
