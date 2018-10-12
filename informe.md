@@ -1,8 +1,8 @@
 ---
 title: Trabajo Práctico 1
-authors:
-		- Martín Errazquín (98017)
-		- Joaquín Torré Zaffaroni (98314)
+author:
+- Martín Errazquín (98017)
+- Joaquín Torré Zaffaroni (98314)
 toc: yes
 ---
 ## Análisis
