@@ -83,14 +83,24 @@ olímpicos, en el plazo de duración de los juegos.
   a vela, que son deportes que requieren gran espacio.
 * No es necesario planificar cómo se deberán intercalar los eventos.
 * Los eventos se transmiten en su totalidad (sea o no intercalada) o no se
-  transmiten. No se pueden subdividir los eventos en partes de un día de tal
-  manera que se cambie de cobertura.
-*	El primer día de transmisión es el 7 de octubre y el último el 18 de octubre.
+  transmiten. No se pueden subdividir los eventos en partes tal
+  manera que se cambie de cobertura antes de que terminen.
+* Sin embargo, sí es posible transmitir un evento que acepta otro intercalado y
+  que este último cambie a la mitad de la transmisión (por ejemplo: un deporte
+  tiene horario de 13:00 a 15:00, otro de 13:00 a 14:00 y un tercero de 14:00 a
+  15:00; todos estos se pueden transmitir en el mismo canal).
+* El primer día de transmisión es el 7 de octubre y el último el 18 de octubre.
+  (En el *schedule* hay dos días tomados como días extra antes del inicio de los
+  juegos, esta hipótesis los descarta.)
+* No es necesario cubrir todas las horas de transmisión con algún deporte. Por
+  ejemplo, si en una hora hay deportes en actividad pero no se muestran porque
+  luego comenzará un deporte no-intercalable con mucho mayor impacto en la 
+  calidad de transmisión, esta solución es factible.
 
 ### Sobre los eventos deportivos  
 
 * No hay demoras de ningún tipo, ni cambios en las ubicaciones (p.ej. un evento
-  no puede cambiarse cambiar de sede).
+  no puede cambiarse de sede).
 * Aparte de aumento por calidad de final y por especialista, no hay otros 
   factores
   (por ejemplo, si un jugador o equipo es muy famoso, o si hay rivalidad entre
@@ -102,7 +112,8 @@ olímpicos, en el plazo de duración de los juegos.
   transmitir un evento ya se pueden transmitir las finales de ese deporte. No es
   necesario, por ejemplo, que las semifinales sean transmitidas.
 * De la misma forma, si un deporte tiene una final sin eventos previos, la
-	restricción se ve anulada.
+  restricción anterior se ve anulada. (En el *schedule* tomada de ejemplo el
+  primer evento del triatlón se marca como final.)
 * Si algún evento deportivo es intercalable pero se muestra solo (p.ej., porque
   no hay otros eventos en ese momento), no cambia la calidad de transmisión por
   dedicarle más tiempo de cobertura.
@@ -115,5 +126,5 @@ olímpicos, en el plazo de duración de los juegos.
 * Un equipo, a priori, puede cubrir cualquier horario necesario. No hay
   restricciones por horario de almuerzo o similar.
 * No importa el tamaño del equipo a la hora de cubrir un deporte, o bien la
-  categorías que puede cubrir ya incluye estas restricciones. (Esta hipótesis
+  categorías que puede cubrir ya incluyen estas restricciones. (Esta hipótesis
   está relacionada a la de un solo equipo por evento.)
