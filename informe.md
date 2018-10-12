@@ -103,6 +103,8 @@ olímpicos, en el plazo de duración de los juegos.
   ejemplo, si en una hora hay deportes en actividad pero no se muestran porque
   luego comenzará un deporte no-intercalable con mucho mayor impacto en la 
   calidad de transmisión, esta solución es factible.
+* Los *aumentos* que figuran en la tabla tienen las mismas unidades que la
+  calidad por evento transmitido, es decir, no son porcentajes.
 
 ### Sobre los eventos deportivos  
 
@@ -118,12 +120,15 @@ olímpicos, en el plazo de duración de los juegos.
   anterior a las finales") no hace distinción entre eventos. Es decir, con sólo
   transmitir un evento ya se pueden transmitir las finales de ese deporte. No es
   necesario, por ejemplo, que las semifinales sean transmitidas.
-* De la misma forma, si un deporte tiene una final sin eventos previos, la
-  restricción anterior se ve anulada. (En el *schedule* tomada de ejemplo el
-  primer evento del triatlón se marca como final.)
+* De la misma forma, si un deporte tiene una final sin eventos previos, no lo
+  consideramos como final en el modelo. 
+  (En el *schedule* tomada de ejemplo el primer evento del triatlón se marca 
+  como final.)
 * Si algún evento deportivo es intercalable pero se muestra solo (p.ej., porque
   no hay otros eventos en ese momento), no cambia la calidad de transmisión por
   dedicarle más tiempo de cobertura.
+* No hay eventos del mismo deporte, en sedes distintas, que compartan algún
+  horario.
 
 ### Sobre los equipos periodísticos  
 
@@ -143,11 +148,19 @@ jornadas, $d$ a un deporte, $h$ a un horario dentro de un día, $i$ a un i-ésim
 equipo, $s$ a una sede.  
 De manera genérica podemos definir conjuntos asociados: $J$ es el conjunto de
 jornadas o días, $D$ el conjunto de deportes, $\mathrm{Eq}$ el conjunto de
-equipos periodísticos.
+equipos periodísticos. 
+Algunos conjuntos especiales son:
+
+* $\mathrm{H}_{j,d}$ el conjunto de horarios $(h_1, h_2)$ para el deporte $d$ 
+  en la jornada $j$. 
+* También definimos el conjunto $\mathrm{F}$ que contiene la terna 
+  $(j, d, h_1, h_2)$ si ese evento es una final.
 
 ### Parámetros  
 * $\mathrm{c}_{i,d}$ es un parámetro binario que indica si el equipo $i$-ésimo
   puede cubrir el deporte $d$ (es decir, indica la categoría).
+* $\mathrm{Q}_d^t$ indica la calidad de transmisión por transmitir el deporte $d$.
+* $\mathrm{Q}_d^f$ indica el aumento de calidad por evento final del deporte $d$.
 * (falta un parámetro que sea 2 o 1 según un evento es intercalable o no)
 * (podríamos definir los conjuntos desagregados acá)
 
@@ -164,4 +177,63 @@ equipos periodísticos.
 
 ## Modelo
 
+### Funcional   
 
+$$
+\mathrm{maximize}\ z = 
+    \sum_{\substack{j\in J,\ d\in D\\ (h_1, h_2)\in \mathrm{H}_{j,d}}}
+    \mathrm{Y}_{j,d,h_1,h_2} \times \mathrm{Q}_d^t
+    + \sum_{(j, d, h_1, h_2) \in \mathrm{F}} 
+    \mathrm{Y}_{j,d,h_1,h_2} \times \mathrm{Q}_d^f
+$$
+
+**falta agregar el aumento por especialista**
+
+### Restricciones
+
+Un evento no puede estar cubierto por más de un equipo:
+$$
+\sum_{i\in \mathrm{Eq}}\mathrm{Y}_{j,d,h_1,h_2,i} \leq 1
+$$
+
+Aprovechando esto, podemos definir que un evento está cubierto si alguno de los
+equipos lo cubre (como sabemos que son binarias y que suman 1, la exclusión
+está asegurada).
+$$
+\mathrm{Y}_{j,d,h_1,h_2} = \sum_{i\in \mathrm{Eq}}\mathrm{Y}_{j,d,h_1,h_2,i}
+$$
+
+Desde luego, un equipo no puede cubrir un deporte para el que no está
+capacitado: 
+
+$$
+\mathrm{Y}_{j,d,h_1,h_2,i} \leq \mathrm{c}_{i,d}
+$$
+
+Utilizando el conjunto de eventos que se intersecan, podemos definir que un
+equipo no puede cubrir más de un evento al mismo tiempo:  
+$$
+\sum_{(d,h_1,h_2)\in M_j} \mathrm{Y}_{j,d,h_1,h_2,i} \leq 1
+$$
+
+Definimos la variable de presencia del equipo $i$-ésimo durante la jornada $j$
+en la sede $s$:  
+$$\mathrm{E}_{s,j} \leq \sum \mathrm{Y}_{j,d,h_1,h_2,i} \leq n
+\mathrm{E}_{s,j}$$
+
+Y usamos esta variable para limitar a que un equipo esté, a lo sumo, en una sede
+durante un mismo día:  
+$$
+\sum_{s\in S} \mathrm{E}_{s,j} \leq 1
+$$
+
+Para los eventos que consideramos finales, definimos que sólo puede ser cubierta
+si se cubrió algún evento previo:  
+$$
+\forall (j, d, h_1, h_2) \in \mathrm{F}:\ 
+\mathrm{Y}_{j,d,h_1,h_2} 
+\leq
+\sum_{\substack{j'\in J, (h_1', h_2')\in \mathrm{H}_{j,d}\\
+    h_2' \leq h_2, j'\leq j}}
+\mathrm{Y}_{j',d,h_1',h_2'} 
+$$
