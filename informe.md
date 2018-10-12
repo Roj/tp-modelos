@@ -138,4 +138,30 @@ olímpicos, en el plazo de duración de los juegos.
 
 ## Variables y parámetros
 
+Para las variables utilizamos ciertas convenciones: $j$ se refiere a las
+jornadas, $d$ a un deporte, $h$ a un horario dentro de un día, $i$ a un i-ésimo
+equipo, $s$ a una sede.  
+De manera genérica podemos definir conjuntos asociados: $J$ es el conjunto de
+jornadas o días, $D$ el conjunto de deportes, $\mathrm{Eq}$ el conjunto de
+equipos periodísticos.
+
+### Parámetros  
+* $\mathrm{c}_{i,d}$ es un parámetro binario que indica si el equipo $i$-ésimo
+  puede cubrir el deporte $d$ (es decir, indica la categoría).
+* (falta un parámetro que sea 2 o 1 según un evento es intercalable o no)
+* (podríamos definir los conjuntos desagregados acá)
+
+### Variables
+
+* $\mathrm{Y}_{j,d,h_1,h_2}$ es una variable binaria que indica si el evento del
+  deporte $d$ en la jornada $d$ desde el horario $h_1$ al $h_2$ es cubierto o
+  no.
+* $\mathrm{Y}_{j,d,h_1,h_2,i}$ es una variable binaria que indica lo anterior,
+  pero particularmente si es cubierto por el equipo $i$-ésimo.
+* $\mathrm{E}_{i,s,j}$ es una variable binaria que indica si el equipo $i$-ésimo
+  está presente en la sede $s$ en la jornada $j$.
+
+
 ## Modelo
+
+
