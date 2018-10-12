@@ -1,3 +1,10 @@
+---
+title: Trabajo Práctico 1
+authors:
+		- Martín Errazquín (98017)
+		- Joaquín Torré Zaffaroni (98314)
+toc: yes
+---
 ## Análisis
 
 ### Set-covering
@@ -128,3 +135,7 @@ olímpicos, en el plazo de duración de los juegos.
 * No importa el tamaño del equipo a la hora de cubrir un deporte, o bien la
   categorías que puede cubrir ya incluyen estas restricciones. (Esta hipótesis
   está relacionada a la de un solo equipo por evento.)
+
+## Variables y parámetros
+
+## Modelo
