@@ -161,6 +161,9 @@ Algunos conjuntos especiales son:
   puede cubrir el deporte $d$ (es decir, indica la categoría).
 * $\mathrm{Q}_d^t$ indica la calidad de transmisión por transmitir el deporte $d$.
 * $\mathrm{Q}_d^f$ indica el aumento de calidad por evento final del deporte $d$.
+* $\mathrm{Q}_d^e$ indica el aumento de calidad por presencia de un especialista.
+* $\mathrm{e}_{i,d}$ es un parámetro binario que indica si el equipo $i$-ésimo
+  tiene un especialista para el deporte $d$.
 * (falta un parámetro que sea 2 o 1 según un evento es intercalable o no)
 * (podríamos definir los conjuntos desagregados acá)
 
@@ -181,8 +184,8 @@ Algunos conjuntos especiales son:
 
 $$
 \mathrm{maximize}\ z = 
-    \sum_{\substack{j\in J,\ d\in D\\ (h_1, h_2)\in \mathrm{H}_{j,d}}}
-    \mathrm{Y}_{j,d,h_1,h_2} \times \mathrm{Q}_d^t
+    \sum_{\substack{j\in J,\ d\in D\\ (h_1, h_2)\in \mathrm{H}_{j,d} \\ {i \in \mathrm{Eq}}}}
+    \mathrm{Y}_{j,d,h_1,h_2} \times (\mathrm{Q}_d^t + \mathrm{e}_{i,d} \mathrm{Q}_d^e )
     + \sum_{(j, d, h_1, h_2) \in \mathrm{F}} 
     \mathrm{Y}_{j,d,h_1,h_2} \times \mathrm{Q}_d^f
 $$
@@ -236,4 +239,13 @@ $$
 \sum_{\substack{j'\in J, (h_1', h_2')\in \mathrm{H}_{j,d}\\
     h_2' \leq h_2, j'\leq j}}
 \mathrm{Y}_{j',d,h_1',h_2'} 
+$$
+
+Un equipo puede cubrir una final sólo si tiene un especialista:
+
+$$
+\forall (j, d, h_1, h_2) \in \mathrm{F}:\ 
+\mathrm{Y}_{j,d,h_1,h_2} 
+\leq
+\mathrm{e}_{i,d}
 $$
