@@ -109,8 +109,6 @@ olímpicos, en el plazo de duración de los juegos.
   calidad de transmisión, esta solución es factible.
 * Los *aumentos* que figuran en la tabla tienen las mismas unidades que la
   calidad por evento transmitido, es decir, no son porcentajes.
-* La calidad de transmisión es un valor fijo por evento, no depende de la
-  duración del evento.
 
 ### Sobre los eventos deportivos  
 
@@ -168,26 +166,19 @@ Algunos conjuntos especiales son:
     * Un conjunto de eventos de horarios intersecados 2 a 2 es maximal si no hay otro
     evento esa jornada tal que su horario se superponga con todos los eventos que
     contiene el conjunto.
-* Para simplicidad en la expresión de restricciones, vamos a definir el conjunto de
-todos los eventos Ev:
-$$
-\mathrm{Ev} = \{ (j,d,h_1,h_2) : j \in J, d \in D, (h_1, h_2) \in\mathrm{H}_{j,d} \}
-$$
 
 
 ### Parámetros  
 * $\mathrm{c}_{i,d}$ es un parámetro binario que indica si el equipo $i$-ésimo
   puede cubrir el deporte $d$ (es decir, indica la categoría).
 * $\mathrm{Q}_d^t$ indica la calidad de transmisión por transmitir el deporte $d$.
-  Tiene unidades de calidad.
-* $\mathrm{Q}_d^f$ indica el aumento de calidad por evento final del deporte $d$,
-  con las mismas unidades.
-* $\mathrm{Q}_d^e$ indica el aumento de calidad por presencia de un especialista,
-  con las mismas unidades.
+* $\mathrm{Q}_d^f$ indica el aumento de calidad por evento final del deporte $d$.
+* $\mathrm{Q}_d^e$ indica el aumento de calidad por presencia de un especialista.
 * $\mathrm{e}_{i,d}$ es un parámetro binario que indica si el equipo $i$-ésimo
   tiene un especialista para el deporte $d$.
-* $\mathrm{INT}_d$ es un parámetro adimensional que vale 1 si el deporte $d$ es
-  intercalable o 2 si no.
+* $\mathrm{INT}_d$ es un parámetro que vale 1 si el deporte $d$ es intercalable
+  o 2 si no.
+* (podríamos definir los conjuntos desagregados acá)
 
 ### Variables
 
@@ -209,7 +200,7 @@ $$
 
 $$
 \mathrm{maximize}\ z =
-    \sum_{\substack{(j, d, h_1, h_2) \in \mathrm{Ev} \\ {i \in \mathrm{Eq}}}}
+    \sum_{\substack{j\in J,\ d\in D\\ (h_1, h_2)\in \mathrm{H}_{j,d} \\ {i \in \mathrm{Eq}}}}
     \mathrm{Y}_{j,d,h_1,h_2} \times (\mathrm{Q}_d^t + \mathrm{e}_{i,d} \mathrm{Q}_d^e )
     + \sum_{(j, d, h_1, h_2) \in \mathrm{F}}
     \mathrm{Y}_{j,d,h_1,h_2} \times \mathrm{Q}_d^f
@@ -219,7 +210,6 @@ $$
 
 Un evento no puede estar cubierto por más de un equipo:
 $$
-\forall (j, d, h_1, h_2) \in \mathrm{Ev}:\
 \sum_{i\in \mathrm{Eq}}\mathrm{Y}_{j,d,h_1,h_2,i} \leq 1
 $$
 
@@ -227,7 +217,6 @@ Aprovechando esto, podemos definir que un evento está cubierto si alguno de los
 equipos lo cubre (como sabemos que son binarias y que suman 1, la exclusión
 está asegurada).
 $$
-\forall (j, d, h_1, h_2) \in \mathrm{Ev}:\
 \mathrm{Y}_{j,d,h_1,h_2} = \sum_{i\in \mathrm{Eq}}\mathrm{Y}_{j,d,h_1,h_2,i}
 $$
 
@@ -235,7 +224,6 @@ Desde luego, un equipo no puede cubrir un deporte para el que no está
 capacitado:
 
 $$
-\forall (j, d, h_1, h_2) \in \mathrm{Ev}, i\in \mathrm{Eq}:\
 \mathrm{Y}_{j,d,h_1,h_2,i} \leq \mathrm{c}_{i,d}
 $$
 
@@ -249,18 +237,12 @@ $$
 
 Definimos la variable de presencia del equipo $i$-ésimo durante la jornada $j$
 en la sede $s$:  
-$$
-\forall s \in S, j \in J:\
-\mathrm{E}_{s,j} \leq
-\sum_{\substack{d \in D,\\ (h_1, h_2) \in \mathrm{H}_{j,d}}}
-\mathrm{Y}_{j,d,h_1,h_2,i} \leq n
-\mathrm{E}_{s,j}
-$$
+$$\mathrm{E}_{s,j} \leq \sum \mathrm{Y}_{j,d,h_1,h_2,i} \leq n
+\mathrm{E}_{s,j}$$
 
 Y usamos esta variable para limitar a que un equipo esté, a lo sumo, en una sede
 durante un mismo día:  
 $$
-\forall s \in S, j \in J:\
 \sum_{s\in S} \mathrm{E}_{s,j} \leq 1
 $$
 
@@ -297,7 +279,7 @@ o 1 evento no intercalable (recordar que $\mathrm{INT}_d$ vale 1 si el evento es
 intercalable o 2 si no):
 
 $$
-\forall j \in J, \mathrm{X}_j^{(i)} \in \mathrm{X}_j, k \in \{1,2\}:\
+\forall j \in J, \mathrm{X}_j^{(i)} \in \mathrm{X}_j, k \in {1,2}:\
 \sum_{(j, d, h_1, h_2) \in \mathrm{X}_j^{(i)}}
 \mathrm{T}_{j,d,h_1,h_2,k} \times \mathrm{INT}_d
 \leq 2
