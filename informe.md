@@ -183,7 +183,6 @@ $$
   tiene un especialista para el deporte $d$.
 * $\mathrm{INT}_d$ es un parámetro que vale 1 si el deporte $d$ es intercalable
   o 2 si no.
-* (podríamos definir los conjuntos desagregados acá)
 
 ### Variables
 
