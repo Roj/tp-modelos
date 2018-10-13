@@ -250,18 +250,18 @@ $$
 Definimos la variable de presencia del equipo $i$-ésimo durante la jornada $j$
 en la sede $s$:  
 $$
-\forall s \in S, j \in J:\
-\mathrm{E}_{s,j} \leq
+\forall s \in S, j \in J, i \in \mathrm{Eq}:\
+\mathrm{E}_{i,s,j} \leq
 \sum_{\substack{d \in D,\\ (h_1, h_2) \in \mathrm{H}_{j,d}}}
 \mathrm{Y}_{j,d,h_1,h_2,i} \leq n
-\mathrm{E}_{s,j}
+\mathrm{E}_{i,s,j}
 $$
 
 Y usamos esta variable para limitar a que un equipo esté, a lo sumo, en una sede
 durante un mismo día:  
 $$
-\forall s \in S, j \in J:\
-\sum_{s\in S} \mathrm{E}_{s,j} \leq 1
+\forall s \in S, j \in J, i \in \mathrm{Eq}:\
+\sum_{s\in S} \mathrm{E}_{i,s,j} \leq 1
 $$
 
 Para los eventos que consideramos finales, definimos que sólo puede ser cubierta
