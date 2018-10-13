@@ -248,11 +248,11 @@ $$
 $$
 
 Definimos la variable de presencia del equipo $i$-ésimo durante la jornada $j$
-en la sede $s$:  
+en la sede $s$ (donde $n$ es la cantidad de eventos en esa sede):
 $$
 \forall s \in S, j \in J, i \in \mathrm{Eq}:\
 \mathrm{E}_{i,s,j} \leq
-\sum_{\substack{d \in D,\\ (h_1, h_2) \in \mathrm{H}_{j,d}}}
+\sum_{\substack{(d, h_1, h_2)\ \mathrm{tal\ que }\\(j, d, h_1, h_2)\mathrm{\ está\ en\ sede\ s}}}
 \mathrm{Y}_{j,d,h_1,h_2,i} \leq n
 \mathrm{E}_{i,s,j}
 $$
@@ -260,7 +260,7 @@ $$
 Y usamos esta variable para limitar a que un equipo esté, a lo sumo, en una sede
 durante un mismo día:  
 $$
-\forall s \in S, j \in J, i \in \mathrm{Eq}:\
+\forall j \in J, i \in \mathrm{Eq}:\
 \sum_{s\in S} \mathrm{E}_{i,s,j} \leq 1
 $$
 
