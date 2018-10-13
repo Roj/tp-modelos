@@ -231,13 +231,13 @@ $$
 
 Definimos la variable de presencia del equipo $i$-ésimo durante la jornada $j$
 en la sede $s$:  
-$$\mathrm{E}_{s,j} \leq \sum \mathrm{Y}_{j,d,h_1,h_2,i} \leq n
-\mathrm{E}_{s,j}$$
+$$\mathrm{E}_{i,s,j} \leq \sum_{(j, d, h_1, h_2)\mathrm{\ en\ sede\ s}} \mathrm{Y}_{j,d,h_1,h_2,i} \leq n
+\mathrm{E}_{i,s,j}$$
 
 Y usamos esta variable para limitar a que un equipo esté, a lo sumo, en una sede
 durante un mismo día:  
 $$
-\sum_{s\in S} \mathrm{E}_{s,j} \leq 1
+\sum_{s\in S} \mathrm{E}_{i,s,j} \leq 1
 $$
 
 Para los eventos que consideramos finales, definimos que sólo puede ser cubierta
