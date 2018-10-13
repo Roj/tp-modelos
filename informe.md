@@ -210,7 +210,7 @@ $$
 $$
 \mathrm{maximize}\ z =
     \sum_{\substack{(j, d, h_1, h_2) \in \mathrm{Ev} \\ {i \in \mathrm{Eq}}}}
-    \mathrm{Y}_{j,d,h_1,h_2} \times (\mathrm{Q}_d^t + \mathrm{e}_{i,d} \mathrm{Q}_d^e )
+    \mathrm{Y}_{j,d,h_1,h_2, i} \times (\mathrm{Q}_d^t + \mathrm{e}_{i,d} \mathrm{Q}_d^e )
     + \sum_{(j, d, h_1, h_2) \in \mathrm{F}}
     \mathrm{Y}_{j,d,h_1,h_2} \times \mathrm{Q}_d^f
 $$
