@@ -1,7 +1,7 @@
 ---
 title: Trabajo Práctico 1
 author:
-- Martín Errazquín (98017)
+- Martín Errázquin (98017)
 - Joaquín Torré Zaffaroni (98314)
 toc: yes
 ---
@@ -30,10 +30,10 @@ Cuatro diferencias con el problema canónico de cobertura de conjuntos son:
   deporte.
 
 ### Capacidad de cobertura
-En la siguiente tabla se indica la capacidad de cobertura, donde una X marca que 
-ese equipo puede cubrir esa categoría. Se hace una distinción especial para la 
-categoría E que consta de Baile Deportivo y Escalada, por especialistas del 
-primero que no son del segundo. 
+En la siguiente tabla se indica la capacidad de cobertura, donde una X marca que
+ese equipo puede cubrir esa categoría. Se hace una distinción especial para la
+categoría E que consta de Baile Deportivo y Escalada, por especialistas del
+primero que no son del segundo.
 
 | Categoría	|	Equipo 1 	| Equipo 2	| Equipo 3 	| Equipo 4 	| Equipo 5 	|
 |	:---:			|	:---:		 	|	:---:			|	:---:		 	|	:---:			|	:---:		 	|
@@ -44,13 +44,13 @@ primero que no son del segundo.
 |E (BD)			|		X				|			X			|						|						|						|
 |E (Esc)		|		X				|						|						|						|						|
 
-Esto es importante porque no tiene sentido contemplar la posibilidad de que un 
-equipo cubra un determinado evento si en realidad no es factible tal opción y 
-tal vez resulte conveniente, en vez de modelar una variable y forzarla a 
+Esto es importante porque no tiene sentido contemplar la posibilidad de que un
+equipo cubra un determinado evento si en realidad no es factible tal opción y
+tal vez resulte conveniente, en vez de modelar una variable y forzarla a
 valer 0, directamente no modelarla.
 
 Aplicada a finales, la capacidad de cobertura es más restrictiva y exige que el
-equipo a cubrir cada una posea un especialista de la disciplina. Con el mismo 
+equipo a cubrir cada una posea un especialista de la disciplina. Con el mismo
 formato se indica la capacidad para cubrir finales por categoría en la siguiente
 tabla.
 
@@ -72,10 +72,10 @@ de modelar toda la cosa si separando por sede y día en realidad hay poco*
 ### Separación de cobertura de eventos y transmisión
 
 *completar cuando el modelo esté más avanzado*
- 
+
 ## Objetivo
 
-Determinar si mandar un equipo periodístico (y en ese caso, cuál) a cada 
+Determinar si mandar un equipo periodístico (y en ese caso, cuál) a cada
 evento deportivo, de manera de maximizar la calidad de cobertura de los juegos
 olímpicos, en el plazo de duración de los juegos.
 
@@ -101,7 +101,7 @@ olímpicos, en el plazo de duración de los juegos.
   juegos, esta hipótesis los descarta.)
 * No es necesario cubrir todas las horas de transmisión con algún deporte. Por
   ejemplo, si en una hora hay deportes en actividad pero no se muestran porque
-  luego comenzará un deporte no-intercalable con mucho mayor impacto en la 
+  luego comenzará un deporte no-intercalable con mucho mayor impacto en la
   calidad de transmisión, esta solución es factible.
 * Los *aumentos* que figuran en la tabla tienen las mismas unidades que la
   calidad por evento transmitido, es decir, no son porcentajes.
@@ -110,7 +110,7 @@ olímpicos, en el plazo de duración de los juegos.
 
 * No hay demoras de ningún tipo, ni cambios en las ubicaciones (p.ej. un evento
   no puede cambiarse de sede).
-* Aparte de aumento por calidad de final y por especialista, no hay otros 
+* Aparte de aumento por calidad de final y por especialista, no hay otros
   factores
   (por ejemplo, si un jugador o equipo es muy famoso, o si hay rivalidad entre
   contrincantes, si es una semifinal, etc.)
@@ -121,8 +121,8 @@ olímpicos, en el plazo de duración de los juegos.
   transmitir un evento ya se pueden transmitir las finales de ese deporte. No es
   necesario, por ejemplo, que las semifinales sean transmitidas.
 * De la misma forma, si un deporte tiene una final sin eventos previos, no lo
-  consideramos como final en el modelo. 
-  (En el *schedule* tomada de ejemplo el primer evento del triatlón se marca 
+  consideramos como final en el modelo.
+  (En el *schedule* tomada de ejemplo el primer evento del triatlón se marca
   como final.)
 * Si algún evento deportivo es intercalable pero se muestra solo (p.ej., porque
   no hay otros eventos en ese momento), no cambia la calidad de transmisión por
@@ -145,16 +145,24 @@ olímpicos, en el plazo de duración de los juegos.
 
 Para las variables utilizamos ciertas convenciones: $j$ se refiere a las
 jornadas, $d$ a un deporte, $h$ a un horario dentro de un día, $i$ a un i-ésimo
-equipo, $s$ a una sede.  
+equipo, $s$ a una sede, $k$ al número de canal (1 o 2).  
 De manera genérica podemos definir conjuntos asociados: $J$ es el conjunto de
 jornadas o días, $D$ el conjunto de deportes, $\mathrm{Eq}$ el conjunto de
-equipos periodísticos. 
+equipos periodísticos.
 Algunos conjuntos especiales son:
 
-* $\mathrm{H}_{j,d}$ el conjunto de horarios $(h_1, h_2)$ para el deporte $d$ 
-  en la jornada $j$. 
-* También definimos el conjunto $\mathrm{F}$ que contiene la terna 
+* $\mathrm{H}_{j,d}$ el conjunto de horarios $(h_1, h_2)$ para el deporte $d$
+  en la jornada $j$.
+* También definimos el conjunto $\mathrm{F}$ que contiene la terna
   $(j, d, h_1, h_2)$ si ese evento es una final.
+* Definimos $\mathrm{X}_{j}$ como el conjunto de conjuntos maximales de eventos
+  de horarios intersecados 2 a 2 durante la jornada $j$. A saber:
+    * Un conjunto de eventos de horarios intersecados 2 a 2 es un conjunto de eventos
+    tales que para cada par de los mismos, sus horarios se intersecan/superponen.
+    * Un conjunto de eventos de horarios intersecados 2 a 2 es maximal si no hay otro
+    evento esa jornada tal que su horario se superponga con todos los eventos que
+    contiene el conjunto.
+
 
 ### Parámetros  
 * $\mathrm{c}_{i,d}$ es un parámetro binario que indica si el equipo $i$-ésimo
@@ -164,18 +172,22 @@ Algunos conjuntos especiales son:
 * $\mathrm{Q}_d^e$ indica el aumento de calidad por presencia de un especialista.
 * $\mathrm{e}_{i,d}$ es un parámetro binario que indica si el equipo $i$-ésimo
   tiene un especialista para el deporte $d$.
-* (falta un parámetro que sea 2 o 1 según un evento es intercalable o no)
+* $\mathrm{INT}_d$ es un parámetro que vale 1 si el deporte $d$ es intercalable
+  o 2 si no.
 * (podríamos definir los conjuntos desagregados acá)
 
 ### Variables
 
 * $\mathrm{Y}_{j,d,h_1,h_2}$ es una variable binaria que indica si el evento del
-  deporte $d$ en la jornada $d$ desde el horario $h_1$ al $h_2$ es cubierto o
+  deporte $d$ en la jornada $j$ desde el horario $h_1$ al $h_2$ es cubierto o
   no.
 * $\mathrm{Y}_{j,d,h_1,h_2,i}$ es una variable binaria que indica lo anterior,
   pero particularmente si es cubierto por el equipo $i$-ésimo.
 * $\mathrm{E}_{i,s,j}$ es una variable binaria que indica si el equipo $i$-ésimo
   está presente en la sede $s$ en la jornada $j$.
+* $\mathrm{T}_{j,d,h_1,h_2,k}$ es una variable binaria que indica que el evento del
+  deporte $d$ en la jornada $j$ desde el horario $h_1$ al $h_2$ es transmitido por
+  el canal $k$.
 
 
 ## Modelo
@@ -183,10 +195,10 @@ Algunos conjuntos especiales son:
 ### Funcional   
 
 $$
-\mathrm{maximize}\ z = 
+\mathrm{maximize}\ z =
     \sum_{\substack{j\in J,\ d\in D\\ (h_1, h_2)\in \mathrm{H}_{j,d} \\ {i \in \mathrm{Eq}}}}
     \mathrm{Y}_{j,d,h_1,h_2} \times (\mathrm{Q}_d^t + \mathrm{e}_{i,d} \mathrm{Q}_d^e )
-    + \sum_{(j, d, h_1, h_2) \in \mathrm{F}} 
+    + \sum_{(j, d, h_1, h_2) \in \mathrm{F}}
     \mathrm{Y}_{j,d,h_1,h_2} \times \mathrm{Q}_d^f
 $$
 
@@ -205,7 +217,7 @@ $$
 $$
 
 Desde luego, un equipo no puede cubrir un deporte para el que no está
-capacitado: 
+capacitado:
 
 $$
 \mathrm{Y}_{j,d,h_1,h_2,i} \leq \mathrm{c}_{i,d}
@@ -231,19 +243,38 @@ $$
 Para los eventos que consideramos finales, definimos que sólo puede ser cubierta
 si se cubrió algún evento previo:  
 $$
-\forall (j, d, h_1, h_2) \in \mathrm{F}:\ 
-\mathrm{Y}_{j,d,h_1,h_2} 
+\forall (j, d, h_1, h_2) \in \mathrm{F}:\
+\mathrm{Y}_{j,d,h_1,h_2}
 \leq
 \sum_{\substack{j'\in J, (h_1', h_2')\in \mathrm{H}_{j,d}\\
     h_2' \leq h_2, j'\leq j}}
-\mathrm{Y}_{j',d,h_1',h_2'} 
+\mathrm{Y}_{j',d,h_1',h_2'}
 $$
 
 Un equipo puede cubrir una final sólo si tiene un especialista:
 
 $$
-\forall (j, d, h_1, h_2) \in \mathrm{F}:\ 
-\mathrm{Y}_{j,d,h_1,h_2} 
+\forall (j, d, h_1, h_2) \in \mathrm{F}:\
+\mathrm{Y}_{j,d,h_1,h_2}
 \leq
 \mathrm{e}_{i,d}
+$$
+
+Si un evento es cubierto, debe ser transmitido por exactamente uno de los dos canales:
+
+$$
+\forall (j, d, h_1, h_2) \in  \mathrm{Ev}:\
+\mathrm{T}_{j,d,h_1,h_2} = \mathrm{T}_{j,d,h_1,h_2,1} + \mathrm{T}_{j,d,h_1,h_2,2}
+$$
+
+
+Para cada intersección de horarios se pueden transmitir hasta 2 eventos intercalables
+o 1 evento no intercalable (recordar que $\mathrm{INT}_d$ vale 1 si el evento es
+intercalable o 2 si no):
+
+$$
+\forall j \in J, \mathrm{X}_j^{(i)} \in \mathrm{X}_j, k \in {1,2}:\
+\sum_{(j, d, h_1, h_2) \in \mathrm{X}_j^{(i)}}
+\mathrm{T}_{j,d,h_1,h_2,k} \times \mathrm{INT}_d
+\leq 2
 $$
