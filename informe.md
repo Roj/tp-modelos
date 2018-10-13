@@ -242,8 +242,8 @@ $$
 Utilizando el conjunto de eventos que se intersecan, podemos definir que un
 equipo no puede cubrir más de un evento al mismo tiempo:  
 $$
-\forall j \in J, \mathrm{X}_j^{(i)} \in \mathrm{X}_j, i \in Eq:\
-\sum_{(j, d, h_1, h_2) \in \mathrm{X}_j^{(i)}}
+\forall j \in J, \mathrm{X}_j^{(z)} \in \mathrm{X}_j, i \in Eq:\
+\sum_{(j, d, h_1, h_2) \in \mathrm{X}_j^{(z)}}
 \mathrm{Y}_{j,d,h_1,h_2,i} \leq 1
 $$
 
@@ -297,8 +297,8 @@ o 1 evento no intercalable (recordar que $\mathrm{INT}_d$ vale 1 si el evento es
 intercalable o 2 si no):
 
 $$
-\forall j \in J, \mathrm{X}_j^{(i)} \in \mathrm{X}_j, k \in \{1,2\}:\
-\sum_{(j, d, h_1, h_2) \in \mathrm{X}_j^{(i)}}
+\forall j \in J, \mathrm{X}_j^{(z)} \in \mathrm{X}_j, k \in \{1,2\}:\
+\sum_{(j, d, h_1, h_2) \in \mathrm{X}_j^{(z)}}
 \mathrm{T}_{j,d,h_1,h_2,k} \times \mathrm{INT}_d
 \leq 2
 $$
