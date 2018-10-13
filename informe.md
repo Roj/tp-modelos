@@ -105,6 +105,8 @@ olímpicos, en el plazo de duración de los juegos.
   calidad de transmisión, esta solución es factible.
 * Los *aumentos* que figuran en la tabla tienen las mismas unidades que la
   calidad por evento transmitido, es decir, no son porcentajes.
+* La calidad de transmisión es un valor fijo por evento, no depende de la
+  duración del evento.
 
 ### Sobre los eventos deportivos  
 
@@ -168,12 +170,15 @@ Algunos conjuntos especiales son:
 * $\mathrm{c}_{i,d}$ es un parámetro binario que indica si el equipo $i$-ésimo
   puede cubrir el deporte $d$ (es decir, indica la categoría).
 * $\mathrm{Q}_d^t$ indica la calidad de transmisión por transmitir el deporte $d$.
-* $\mathrm{Q}_d^f$ indica el aumento de calidad por evento final del deporte $d$.
-* $\mathrm{Q}_d^e$ indica el aumento de calidad por presencia de un especialista.
+  Tiene unidades de calidad.
+* $\mathrm{Q}_d^f$ indica el aumento de calidad por evento final del deporte $d$,
+  con las mismas unidades.
+* $\mathrm{Q}_d^e$ indica el aumento de calidad por presencia de un especialista,
+  con las mismas unidades.
 * $\mathrm{e}_{i,d}$ es un parámetro binario que indica si el equipo $i$-ésimo
   tiene un especialista para el deporte $d$.
-* $\mathrm{INT}_d$ es un parámetro que vale 1 si el deporte $d$ es intercalable
-  o 2 si no.
+* $\mathrm{INT}_d$ es un parámetro adimensional que vale 1 si el deporte $d$ es
+  intercalable o 2 si no.
 
 ### Variables
 
