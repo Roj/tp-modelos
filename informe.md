@@ -66,8 +66,10 @@ tabla.
 
 ### Desagregación de datos
 
-*completar con limpieza de los datos cuando esté, comentar sobre no necesidad
-de modelar toda la cosa si separando por sede y día en realidad hay poco*
+Se adjunta una tabla de datos donde se muestra cómo en realidad para cada día no
+hay tanta superposición como podría esperarse, resultando factible en vez de
+construir los conjuntos de superposiciones en el modelo, hacerlo directamente como
+procesamiento previo.
 
 ### Separación de cobertura de eventos y transmisión
 
@@ -76,6 +78,10 @@ el equipo) de un evento , se observa que por un lado actúan las restricciones
 respecto a que un equipo pueda asistir al mismo y por otro lado e independientemente
 que pueda ser transmitido. Es decir,esta potencial variable actúa de vínculo entre
 dos posibles modelos separados, uno de cobertura y otro de transmisión.
+En el diagrama básico adjunto se muestra esta separación de restricciones, además
+del hecho de que las condiciones de finales son un *agregado* a las condiciones de
+eventos, lo cual es muy importante para nuestro modelo ya que las identificamos como
+eventos con "características extra".
 
 ## Objetivo
 
