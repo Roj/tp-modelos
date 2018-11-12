@@ -277,7 +277,7 @@ $$
 \mathrm{Y}_{j,d,h_1,h_2}
 \leq
 \sum_{\substack{j'\in J, (h_1', h_2')\in \mathrm{H}_{j,d}\\
-    h_2' \leq h_2, j'\leq j}}
+    (j' <j ) \vee (j'=j \wedge h_2' \leq h_2)}}
 \mathrm{Y}_{j',d,h_1',h_2'}
 $$
 
