@@ -294,7 +294,7 @@ Si un evento es cubierto, debe ser transmitido por exactamente uno de los dos ca
 
 $$
 \forall (j, d, h_1, h_2) \in  \mathrm{Ev}:\
-\mathrm{T}_{j,d,h_1,h_2} = \mathrm{T}_{j,d,h_1,h_2,1} + \mathrm{T}_{j,d,h_1,h_2,2}
+\mathrm{Y}_{j,d,h_1,h_2} = \mathrm{T}_{j,d,h_1,h_2,1} + \mathrm{T}_{j,d,h_1,h_2,2}
 $$
 
 
