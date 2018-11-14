@@ -70,6 +70,11 @@ print("param Especialista_{i in Equipos}_{d in Deportes};")
 print("param Cubre_{i in Equipos}_{d in Deportes};")
 
 # Definición de variables
+print("var Y_{e in Eventos} >= 0;")
+print("var Y_{e in Eventos}_{i in Equipos} >= 0;")
+print("var T_{e in Eventos}_1 >= 0;")
+print("var T_{e in Eventos}_2 >= 0;")
+print("var E_{i in Equipos}_{s in Sedes}_{j in Jornadas} >= 0;")
 # Definición de funcional
 
 # Definición de restricciones
