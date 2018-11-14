@@ -74,10 +74,10 @@ print("param Especialista_{i in Equipos}{d in Deportes};")
 print("param Cubre_{i in Equipos}{d in Deportes};")
 
 # Definición de variables
-print("var Y_{e in Eventos} >= 0;")
-print("var Y_{e in Eventos}{i in Equipos} >= 0;")
-print("var T_{e in Eventos}{c in Canales}>= 0;")
-print("var E_{i in Equipos}{s in Sedes}{j in Jornadas} >= 0;")
+print("var Y_{e in Eventos}, binary;")
+print("var Y_{e in Eventos}{i in Equipos}, binary;")
+print("var T_{e in Eventos}{c in Canales}, binary;")
+print("var E_{i in Equipos}{s in Sedes}{j in Jornada}, binary;")
 
 # Definición de funcional
 terminos = ""
