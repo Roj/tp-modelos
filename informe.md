@@ -284,8 +284,8 @@ $$
 Un equipo puede cubrir una final sólo si tiene un especialista:
 
 $$
-\forall (j, d, h_1, h_2) \in \mathrm{F}:\
-\mathrm{Y}_{j,d,h_1,h_2}
+\forall (j, d, h_1, h_2) \in \mathrm{F}, i \in \mathrm{Eq}:\
+\mathrm{Y}_{j,d,h_1,h_2,i}
 \leq
 \mathrm{e}_{i,d}
 $$
