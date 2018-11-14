@@ -4,7 +4,7 @@ import csv
 Idea del modelo:
 
 conjuntos:  Eventos, EventosDeporte{d in deporte}, Final{d in deporte}
-            Equipos, Sedes, Jornadas
+            Equipos, Sedes, Jornadas, Deportes
 
 parametros: Calidad_T{d in deporte}, Calidad_E{d in deporte},
             Calidad_F{d in deporte}. Especialista{i in equipo, d in deporte},
@@ -38,8 +38,8 @@ funcional:  sum {d in deportes}(sum{e in EventosDeporte_d} (Y_e_i(Calidad_T_d + 
 # Cargado de archivos
 with open("constantes_calidad.csv") as f:
     constantes = list(csv.DictReader(f))
-# constantes: list of dict(N, Deporte, Categoría, Intercalable, Calidad base,
-#  AumentoFinal, AumentoEspecialista)
+    # constantes: list of dict(N, Deporte, Categoría, Intercalable, Calidad base,
+    #  AumentoFinal, AumentoEspecialista)
 
 eventos = None#...
 
@@ -51,10 +51,23 @@ deportes = ["Arqueria", "Atletismo", "Badminton", "BaileDeportivo",
     "Remo", "Rugby7", "Taekwondo", "Tenis", "TenisDeMesa",
     "TiroYVariantes", "Triatlon", "NavegacionAVela",
     "VoleyPlaya"]
-# Definicion de parametros
+
+# Definicion de conjuntos
 print("set Eventos;")
 for deporte in deportes:
-    print("set EventosDeporte{}".format(deporte))
+    print("set EventosDeporte{};".format(deporte))
+for deporte in deportes:
+    print("set FinalDeporte{};".format(deporte))
+print("set Equipos;")
+print("set Sedes;")
+print("set Jornadas;")
+print("set Deportes;")
+# Definicion de parametros
+print("param Calidad_T{d in Deportes};")
+print("param Calidad_E{d in Deportes};")
+print("param Calidad_F{d in Deportes};")
+print("param Especialista_{i in Equipos}_{d in Deportes};")
+print("param Cubre_{i in Equipos}_{d in Deportes};")
 
 # Definición de variables
 # Definición de funcional
