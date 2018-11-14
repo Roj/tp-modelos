@@ -42,7 +42,10 @@ with open("constantes_calidad.csv") as f:
     #  AumentoFinal, AumentoEspecialista)
 
 eventos = None#...
-
+def eventos_sede_jornada(sede, jornada):
+    return [str(i) for i in range(2)]
+sedes = ["A", "B", "C"]
+jornadas = [1,2,3]
 deportes = ["Arqueria", "Atletismo", "Badminton", "BaileDeportivo",
     "Basquet", "HandballPlaya", "Boxeo", "Ciclismo", "Equitacion",
     "Escalada", "Esgrima", "Futsal", "Gimnasia", "Golf",
@@ -75,6 +78,7 @@ print("var Y_{e in Eventos} >= 0;")
 print("var Y_{e in Eventos}{i in Equipos} >= 0;")
 print("var T_{e in Eventos}{c in Canales}>= 0;")
 print("var E_{i in Equipos}{s in Sedes}{j in Jornadas} >= 0;")
+
 # Definición de funcional
 terminos = ""
 for deporte in deportes:
@@ -82,4 +86,37 @@ for deporte in deportes:
     terminos += "sum{{e in EventosDeporte{0}, i in Equipos}}(Y_[e][i](Calidad_T[\"{0}\" + Calidad_E[\"{0}\"] * Especialista[i][\"{0}\"]))".format(deporte)
     terminos += " + sum{{e in FinalDeporte{0}}} (Y_[e] * Calidad_F[\"{0}\"])\n".format(deporte)
 print("maximize z: {0};".format(terminos[3:]))
+
 # Definición de restricciones
+
+# La agrego pero comentada porque esta restricción es redundante
+# si las siguientes restricciones hacen bivalente = suma de bivalentes
+# (Y_e = Y_e_1 + ...)
+#print("s.t. max_1_eq_ev_{e in Eventos}: sum{i in Equipos}(Y_[e][i]) <= 1;")
+print("s.t. def_Y_{e in Eventos}: Y_[e] = sum{i in Equipos}Y_[e][i];")
+for deporte in deportes:
+    print(("s.t. cubr_eq_dep_{0}{{i in Equipos, e in EventosDeporte{0}}}:"
+        + "Y_[e][i] <= Cubre_[i][\"{0}\"];").format(deporte))
+# TODO: conjuntos maximales
+for sede in sedes:
+    for jornada in jornadas:
+        terminos_eventos = ["Y_["+e+"]" for e in eventos_sede_jornada(sede, jornada)]
+        cantidad_eventos = len(terminos_eventos)
+        terminos_eventos = " + ".join(terminos_eventos)
+        print(("s.t. e_i_{0}_{1}_inf{{i in Equipos}}: E_[i][\"{0}\"][{1}]"
+            + "<= {2};").format(sede, jornada, terminos_eventos))
+        print(("s.t. e_i_{0}_{1}_sup{{i in Equipos}}: {2} <= "
+            + "{3} * E_[i][\"{0}\"][{1}];").format(sede, jornada,
+            terminos_eventos, cantidad_eventos))
+
+print("s.t. excl_E_i_s_j{i in Equipos, j in Jornadas}: "
+    + "sum{s in Sedes} E_[i][s][j] <= 1;")
+
+# TODO: Restricciones de final sobre eventos previos
+for deporte in deportes:
+    print(("s.t. final_especialista_dep{0}_{{e in FinalDeporte{0}, i in Equipos}}: "
+        + "Y_[e][i] <= Especialista_[i][{0}];").format(deporte))
+
+print("s.t. transmision{e in Eventos}: Y_[e] <= sum{c in Canales} T_[e][c];")
+# TODO: Restricciones de conjuntos maximales para exclusividad de transmision
+
