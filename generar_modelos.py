@@ -4,7 +4,7 @@ import csv
 Idea del modelo:
 
 conjuntos:  Eventos, EventosDeporte{d in deporte}, Final{d in deporte}
-            Equipos, Sedes, Jornadas, Deportes
+            Equipos, Sedes, Jornadas, Deportes, Canales
 
 parametros: Calidad_T{d in deporte}, Calidad_E{d in deporte},
             Calidad_F{d in deporte}. Especialista{i in equipo, d in deporte},
@@ -62,19 +62,24 @@ print("set Equipos;")
 print("set Sedes;")
 print("set Jornadas;")
 print("set Deportes;")
+print("set Canales;")
 # Definicion de parametros
 print("param Calidad_T{d in Deportes};")
 print("param Calidad_E{d in Deportes};")
 print("param Calidad_F{d in Deportes};")
-print("param Especialista_{i in Equipos}_{d in Deportes};")
-print("param Cubre_{i in Equipos}_{d in Deportes};")
+print("param Especialista_{i in Equipos}{d in Deportes};")
+print("param Cubre_{i in Equipos}{d in Deportes};")
 
 # Definición de variables
 print("var Y_{e in Eventos} >= 0;")
-print("var Y_{e in Eventos}_{i in Equipos} >= 0;")
-print("var T_{e in Eventos}_1 >= 0;")
-print("var T_{e in Eventos}_2 >= 0;")
-print("var E_{i in Equipos}_{s in Sedes}_{j in Jornadas} >= 0;")
+print("var Y_{e in Eventos}{i in Equipos} >= 0;")
+print("var T_{e in Eventos}{c in Canales}>= 0;")
+print("var E_{i in Equipos}{s in Sedes}{j in Jornadas} >= 0;")
 # Definición de funcional
-
+terminos = ""
+for deporte in deportes:
+    terminos += "\t+ "
+    terminos += "sum{{e in EventosDeporte{0}, i in Equipos}}(Y_[e][i](Calidad_T[\"{0}\" + Calidad_E[\"{0}\"] * Especialista[i][\"{0}\"]))".format(deporte)
+    terminos += " + sum{{e in FinalDeporte{0}}} (Y_[e] * Calidad_F[\"{0}\"])\n".format(deporte)
+print("maximize z: {0};".format(terminos[3:]))
 # Definición de restricciones
