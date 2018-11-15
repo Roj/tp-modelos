@@ -170,7 +170,7 @@ for deporte in deportes:
     print(("s.t. final_especialista_dep{0}_{{e in FinalDeporte{0}, i in Equipos}}: "
         + "Y_[e][i] <= Especialista_[i][{0}];").format(deporte))
 
-print("s.t. transmision{e in Eventos}: Y_[e] <= sum{c in Canales} T_[e][c];")
+print("s.t. transmision{e in Eventos}: Y_[e] = sum{c in Canales} T_[e][c];")
 
 f = lambda x: 1 if x=='SI' else 2
 INT_d = [f(cte['Intercalable']) for cte in constantes]
