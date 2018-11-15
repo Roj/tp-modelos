@@ -68,8 +68,16 @@ NUM_RESTR = 0   # global horrible para numero de restriccion de transmision
 SRC_PATH = "maximales/maximales_{}.csv"
 DIAS = range(7,19)#range(7,19) #dias 7 a 18
 MOLDE_PRE = "s.t. transm_{}{{c in Canales}}: "
-MOLDE_POST = "<= 2"
+MOLDE_POST = "<= 2;"
 MOLDE_VAR = "T_[\"{}_{}_{}_{}\"][c]" #dia-deporte-hora_inicio-hora_fin
+
+MOLDE_FINALES_PRE = "s.t. final_{}_{}_{}: "   #num_restr_deporte-dia
+MOLDE_FINALES_POST = " >= Y_[\"{}_{}_{}_{}\"];"  #dia-deporte-hora_inicio-hora_fin
+MOLDE_FINALES_VAR = "Y_[\"{}_{}_{}_{}\"]" #dia-deporte-hora_inicio-hora_fin
+NUM_RESTR_FINALES = 0
+K_ES_FINAL = 'es_final'
+K_DIA = 'num_dia'
+HORARIOS_PATH = "horarios/horarios_{}.csv"
 
 def cargar_conjs(num_dia):
     with open(SRC_PATH.format(num_dia)) as f:
@@ -106,6 +114,32 @@ def armar_restr_de_conj_dia(num_dia,conj):
     restr = MOLDE_PRE.format(NUM_RESTR) + restr + MOLDE_POST
     NUM_RESTR+=1
     print(restr)
+
+def cargar_eventos():
+    lista_evs = [[] for i in range(len(deportes))] #una lista de eventos para cada deporte
+    for num_dia in DIAS:
+        with open(HORARIOS_PATH.format(num_dia)) as f:
+            for x in csv.DictReader(f):
+                load = {K_DEP: int(x[K_DEP]),
+                        K_IN:("%.2f") % float(x[K_IN]),
+                        K_F: ("%.2f") % float(x[K_F]),
+                        K_ES_FINAL: int(x[K_ES_FINAL]),
+                        K_DIA: num_dia-DISPLACEMENT}
+                idx_depo = load[K_DEP]-1
+                #print("cargado en "+str(idx_depo))
+                lista_evs[idx_depo].append(load)
+    return lista_evs
+
+def generar_restr_final(restr_base, ev_final):
+    global NUM_RESTR_FINALES
+    assert restr_base != ""
+    dia,idx_deporte,h_in,h_f = [ev_final[k] for k in [K_DIA,K_DEP,K_IN,K_F]]
+    depo = deportes[idx_deporte-1]
+    #pprint([dia,depo,h_in,h_f])
+    x_pre = MOLDE_FINALES_PRE.format(NUM_RESTR_FINALES,depo,dia)
+    x_post = MOLDE_FINALES_POST.format(dia,depo,h_in,h_f)
+    print(x_pre+restr_base+x_post)
+    NUM_RESTR_FINALES+=1
 #/utilities
 
 # Definicion de conjuntos
@@ -165,16 +199,35 @@ for sede in sedes:
 print("s.t. excl_E_i_s_j{i in Equipos, j in Jornadas}: "
     + "sum{s in Sedes} E_[i][s][j] <= 1;")
 
-# TODO: Restricciones de final sobre eventos previos
+
 for deporte in deportes:
     print(("s.t. final_especialista_dep{0}_{{e in FinalDeporte{0}, i in Equipos}}: "
         + "Y_[e][i] <= Especialista_[i][{0}];").format(deporte))
 
 print("s.t. transmision{e in Eventos}: Y_[e] = sum{c in Canales} T_[e][c];")
 
+#restricciones de transmision por conjs maximales
 f = lambda x: 1 if x=='SI' else 2
 INT_d = [f(cte['Intercalable']) for cte in constantes]
 for num_dia in range(DIA_INICIAL,DIA_INICIAL+12):
     conjs_dia_i = cargar_conjs(num_dia)
     for conj_dia_i in conjs_dia_i:
         armar_restr_de_conj_dia(num_dia,conj_dia_i)
+
+#restricciones de cubrir un evento anterior a una final. Notar que es precondicion que...
+#...haya un evento anterior a una final, cubierta por preprocesamiento
+listas_evs_deporte = cargar_eventos()
+for idx_depo in range(len(deportes)):   #para cada deporte
+    depo = deportes[idx_depo]
+    evs_deporte_i = listas_evs_deporte[idx_depo]
+    restr_base = ""
+    for ev_dep_i in evs_deporte_i:      #para cada evento del deporte i
+        if ev_dep_i[K_ES_FINAL]: #si es final genero restriccion
+            generar_restr_final(restr_base, ev_dep_i)
+        else:       #si no es final agrego a restr_base
+            if restr_base != "":
+                restr_base += " + "
+            dia = ev_dep_i[K_DIA]
+            h_in = ev_dep_i[K_IN]
+            h_f = ev_dep_i[K_F]
+            restr_base += MOLDE_FINALES_VAR.format(dia,depo,h_in,h_f)
