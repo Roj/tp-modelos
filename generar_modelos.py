@@ -10,7 +10,7 @@ parametros: Calidad_T{d in deporte}, Calidad_E{d in deporte},
             Calidad_F{d in deporte}. Especialista{i in equipo, d in deporte},
             Cubre{i in equipo, d in deporte}
 
-variables:  Y_{e in Eventos}, Y_{e in Eventos, i in Equipos}, 
+variables:  Y_{e in Eventos}, Y_{e in Eventos, i in Equipos},
             T_{e in Eventos}_1, T_{e in Eventos}_2,
             E{i in Equipos, s in Sedes, j in Jornadas}
 
@@ -20,7 +20,7 @@ restricc.:  * forall e in Eventos: sum{i in Equipos} Y_e_i <= 1
             * conjuntos maximales como una rest. por cada conj.
             * restricciones separadas por cada sede y jornada:
                   forall i: E_i_s_j <= Y_e_i + Y_e'_i + ... <= n * E_i_s_j
-                  n = cantidad de eventos para esa sede en esa jornada 
+                  n = cantidad de eventos para esa sede en esa jornada
                       (i.e. terminos de la suma)
             * forall i in Equipos, j in Jornadas: sum{s in Sedes} E_i_s_j <= 1
             * restricciones separadas para cada final:
@@ -47,13 +47,66 @@ def eventos_sede_jornada(sede, jornada):
 sedes = ["A", "B", "C"]
 jornadas = [1,2,3]
 deportes = ["Arqueria", "Atletismo", "Badminton", "BaileDeportivo",
-    "Basquet", "HandballPlaya", "Boxeo", "Ciclismo", "Equitacion",
+    "Basquet", "VoleyPlaya", "Boxeo", "Ciclismo", "Equitacion",
     "Escalada", "Esgrima", "Futsal", "Gimnasia", "Golf",
     "Halterofilia",
     "Hockey", "Judo", "Karate", "LuchaLibre", "Natacion", "Pentatlon",
     "Remo", "Rugby7", "Taekwondo", "Tenis", "TenisDeMesa",
     "TiroYVariantes", "Triatlon", "NavegacionAVela",
-    "VoleyPlaya"]
+    "HandballPlaya"]
+
+#utilities
+K_CONJ = 'conj'
+K_DEP = 'id_dep'
+K_IN = 'inicio'
+K_F = 'fin'
+DIA_INICIAL = 7 # si hiciera falta que el dia 7 diga dia 1, ponemos 1 aca y listo
+DISPLACEMENT = 7 - DIA_INICIAL
+
+
+NUM_RESTR = 0   # global horrible para numero de restriccion de transmision
+SRC_PATH = "maximales/maximales_{}.csv"
+DIAS = range(7,19)#range(7,19) #dias 7 a 18
+MOLDE_PRE = "s.t. transm_{}{{c in Canales}}: "
+MOLDE_POST = "<= 2"
+MOLDE_VAR = "T_[\"{}_{}_{}_{}\"][c]" #dia-deporte-hora_inicio-hora_fin
+
+def cargar_conjs(num_dia):
+    with open(SRC_PATH.format(num_dia)) as f:
+        conjs = []
+        for x in csv.DictReader(f):
+            load = {K_CONJ: int(x[K_CONJ]),
+                    K_DEP:x[K_DEP],
+                    K_IN:("%.2f") % float(x[K_IN]),
+                    K_F: ("%.2f") % float(x[K_F])}
+            if load[K_CONJ] > len(conjs):
+                conjs.append([])
+                #pprint(conjs)
+            conjs[-1].append(load)
+    #print("Se cargan "+str(len(conjs))+" conjuntos")
+    #pprint(conjs)
+    return conjs
+
+def armar_restr_de_conj_dia(num_dia,conj):
+    """toma un conj maximal de un dia num_dia y genera la restriccion acorde"""
+    global NUM_RESTR
+    restr = ""
+    for evento in conj:
+        if restr != "":
+            restr += " + "
+        dia = str(num_dia-DISPLACEMENT)
+        #pprint(evento)
+        idx_depo =int(evento[K_DEP])-1
+        depo = deportes[idx_depo]
+        h_in = evento[K_IN]
+        h_f = evento[K_F]
+        x = MOLDE_VAR.format(dia,depo,h_in,h_f)
+        #print(x)
+        restr += x + "*" + str(INT_d[idx_depo])
+    restr = MOLDE_PRE.format(NUM_RESTR) + restr + MOLDE_POST
+    NUM_RESTR+=1
+    print(restr)
+#/utilities
 
 # Definicion de conjuntos
 print("set Eventos;")
@@ -118,5 +171,10 @@ for deporte in deportes:
         + "Y_[e][i] <= Especialista_[i][{0}];").format(deporte))
 
 print("s.t. transmision{e in Eventos}: Y_[e] <= sum{c in Canales} T_[e][c];")
-# TODO: Restricciones de conjuntos maximales para exclusividad de transmision
 
+f = lambda x: 1 if x=='SI' else 2
+INT_d = [f(cte['Intercalable']) for cte in constantes]
+for num_dia in range(DIA_INICIAL,DIA_INICIAL+12):
+    conjs_dia_i = cargar_conjs(num_dia)
+    for conj_dia_i in conjs_dia_i:
+        armar_restr_de_conj_dia(num_dia,conj_dia_i)
