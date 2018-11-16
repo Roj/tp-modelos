@@ -1,5 +1,5 @@
-id_dep,inicio,fin,es_final
-7,13,17.05,1
-12,9,15.3,0
-18,9,12.1,0
-18,14,15.25,1
+id_dep,inicio,fin,es_final,sedes
+7,13,17.05,1,YOP
+12,9,15.3,0,TECNO
+18,9,12.1,0,YOP
+18,14,15.25,1,YOP
