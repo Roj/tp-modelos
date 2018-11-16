@@ -140,7 +140,16 @@ def generar_restr_final(restr_base, ev_final):
     x_post = MOLDE_FINALES_POST.format(dia,depo,h_in,h_f)
     print(x_pre+restr_base+x_post)
     NUM_RESTR_FINALES+=1
+
+def nombre_evento(evento_dicc, deporte):
+    return "{}_{}_{}_{}".format(
+        evento_dicc[K_DIA],
+        deporte,
+        evento_dicc[K_IN],
+        evento_dicc[K_F]
+    )
 #/utilities
+listas_evs_deporte = cargar_eventos()
 
 # Definicion de conjuntos
 print("set Eventos;")
@@ -216,7 +225,6 @@ for num_dia in range(DIA_INICIAL,DIA_INICIAL+12):
 
 #restricciones de cubrir un evento anterior a una final. Notar que es precondicion que...
 #...haya un evento anterior a una final, cubierta por preprocesamiento
-listas_evs_deporte = cargar_eventos()
 for idx_depo in range(len(deportes)):   #para cada deporte
     depo = deportes[idx_depo]
     evs_deporte_i = listas_evs_deporte[idx_depo]
@@ -231,3 +239,94 @@ for idx_depo in range(len(deportes)):   #para cada deporte
             h_in = ev_dep_i[K_IN]
             h_f = ev_dep_i[K_F]
             restr_base += MOLDE_FINALES_VAR.format(dia,depo,h_in,h_f)
+
+# Sección de datos
+print("data;")
+todos_eventos = ""
+for i in range(len(deportes)):
+    deporte = deportes[i]
+    eventos_deporte = " ".join(["\""+nombre_evento(ev, deporte)+"\"" for ev in listas_evs_deporte[i]])
+    print("set EventosDeporte{0} := {1};".format(deporte, eventos_deporte))
+    finales_deporte = " ".join(["\""+nombre_evento(ev, deporte)+"\"" for ev in listas_evs_deporte[i] if ev[K_ES_FINAL]])
+    print("set FinalDeporte{0} := {1};".format(deporte, eventos_deporte))
+    todos_eventos += " " + eventos_deporte
+
+print("set Eventos := {};".format(" ".join(
+    ["\""+nombre_evento(ev, deportes[dep])+"\"" for dep in range(len(deportes)) for ev in listas_evs_deporte[dep]]
+)))
+
+print("set Equipos := 1 2 3 4 5;")
+print("set Canales := 1 2;")
+print("set Deportes := {};".format(" ".join(["\""+deporte+"\"" for deporte in deportes])))
+# TODO: conjuntos de Sedes y Jornadas
+
+# Parámetros de calidad
+calidades = {}
+with open("constantes_calidad.csv") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        calidades[row["Deporte"]] = {
+            "categoria": row["Categoria"],
+            "base": row["Calidad base"],
+            "final": row["AumentoFinal"],
+            "especialista": row["AumentoEspecialista"]
+        }
+
+print("param Calidad_T := {};".format(
+    " ".join(
+        ["\"{}\" {}\n".format(deporte, calidades[deporte]["base"]) for deporte in deportes]
+    )
+))
+
+print("param Calidad_E := {};".format(
+    " ".join(
+        ["\"{}\" {}\n".format(deporte, calidades[deporte]["especialista"]) for deporte in deportes]
+    )
+))
+
+print("param Calidad_F := {};".format(
+    " ".join(
+        ["\"{}\" {}\n".format(deporte, calidades[deporte]["final"]) for deporte in deportes]
+    )
+))
+
+coberturas=[dict(), dict(), dict(), dict(), dict()]
+with open("coberturas.csv") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row)
+        #nos asegura que "" => [""]
+        tolist = lambda string: [e for e in string.split(",")]
+        coberturas[int(row["Numero"])-1] = {
+            "especialista_categorias": tolist(row["EspecialistaCategorias"]),
+            "especialista_deportes": tolist(row["EspecialistaDeportes"]),
+            "cubre_categorias": tolist(row["CubreCategorias"]),
+            "cubre_deportes": tolist(row["CubreDeportes"])
+        }
+
+print("param Cubre 1 2 3 4 5 :=");
+for deporte in deportes:
+    cubre_deporte = ""
+    for eq in range(5):
+        if (calidades[deporte]["categoria"] in coberturas[eq]["cubre_categorias"]
+            or deporte in coberturas[eq]["cubre_deportes"]):
+            cubre_deporte+= "1 "
+        else:
+            cubre_deporte+= "0 "
+    print("\t\"{}\" {}".format(deporte, cubre_deporte))
+
+print(";")
+# Especialistas
+print("param Especialista 1 2 3 4 5 :=")
+for deporte in deportes:
+    tiene_especialistas = ""
+    for eq in range(5):
+        if (calidades[deporte]["categoria"] in coberturas[eq]["especialista_categorias"]
+            or deporte in coberturas[eq]["especialista_deportes"]):
+            tiene_especialistas+= "1 "
+        else:
+            tiene_especialistas+= "0 "
+    print("\t\"{}\" {}".format(deporte, cubre_deporte))
+print(";")
+# Cubre
+print("end;")
