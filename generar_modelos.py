@@ -313,7 +313,7 @@ with open("coberturas.csv") as f:
             "cubre_deportes": tolist(row["CubreDeportes"])
         }
 
-print("param Cubre: 1 2 3 4 5 :=");
+print("param Cubre (tr): 1 2 3 4 5 :=");
 for deporte in deportes:
     cubre_deporte = ""
     for eq in range(5):
@@ -326,7 +326,7 @@ for deporte in deportes:
 
 print(";")
 # Especialistas
-print("param Especialista: 1 2 3 4 5 :=")
+print("param Especialista (tr): 1 2 3 4 5 :=")
 for deporte in deportes:
     tiene_especialistas = ""
     for eq in range(5):
