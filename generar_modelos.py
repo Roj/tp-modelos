@@ -60,7 +60,7 @@ SRC_PATH = "maximales/maximales_{}.csv"
 DIAS = range(7,19)#range(7,19) #dias 7 a 18
 MOLDE_PRE = "s.t. transm_{}{{c in Canales}}: "
 MOLDE_POST = "<= 2;"
-MOLDE_VAR = "T_[\"{}_{}_{}_{}\"][c]" #dia-deporte-hora_inicio-hora_fin
+MOLDE_VAR = "T_[\"{}_{}_{}_{}\", c]" #dia-deporte-hora_inicio-hora_fin
 
 MOLDE_FINALES_PRE = "s.t. final_{}_{}_{}: "   #num_restr_deporte-dia
 MOLDE_FINALES_POST = " >= Y_[\"{}_{}_{}_{}\"];"  #dia-deporte-hora_inicio-hora_fin
@@ -175,7 +175,7 @@ print("param Calidad_T{d in Deportes};")
 print("param Calidad_E{d in Deportes};")
 print("param Calidad_F{d in Deportes};")
 print("param Especialista{i in Equipos, d in Deportes};")
-print("param Cubre_{i in Equipos, d in Deportes};")
+print("param Cubre{i in Equipos, d in Deportes};")
 
 # Definición de variables
 print("var Y_{e in Eventos}, binary;")
@@ -187,7 +187,7 @@ print("var E_{i in Equipos, s in Sedes, j in Jornadas}, binary;")
 terminos = ""
 for deporte in deportes:
     terminos += "\t+ "
-    terminos += "sum{{e in EventosDeporte{0}, i in Equipos}}(Y_EQ_[e, i]*(Calidad_T[\"{0}\" + Calidad_E[\"{0}\"] * Especialista[i, \"{0}\"]))".format(deporte)
+    terminos += "sum{{e in EventosDeporte{0}, i in Equipos}}(Y_EQ_[e, i]*(Calidad_T[\"{0}\"] + Calidad_E[\"{0}\"] * Especialista[i, \"{0}\"]))".format(deporte)
     terminos += " + sum{{e in FinalDeporte{0}}} (Y_[e] * Calidad_F[\"{0}\"])\n".format(deporte)
 print("maximize z: {0};".format(terminos[3:]))
 
@@ -197,31 +197,33 @@ print("maximize z: {0};".format(terminos[3:]))
 # si las siguientes restricciones hacen bivalente = suma de bivalentes
 # (Y_e = Y_EQ_e_1 + ...)
 #print("s.t. max_1_eq_ev_{e in Eventos}: sum{i in Equipos}(Y_[e][i]) <= 1;")
-print("s.t. def_Y_{e in Eventos}: Y_[e] = sum{i in Equipos}Y_EQ_[e][i];")
+print("s.t. def_Y_{e in Eventos}: Y_[e] = sum{i in Equipos}Y_EQ_[e,i];")
 for deporte in deportes:
     print(("s.t. cubr_eq_dep_{0}{{i in Equipos, e in EventosDeporte{0}}}:"
-        + "Y_EQ_[e][i] <= Cubre_[i][\"{0}\"];").format(deporte))
+        + "Y_EQ_[e, i] <= Cubre[i, \"{0}\"];").format(deporte))
 
 for sede in sedes:
     for jornada in jornadas:
-        terminos_eventos = ["Y_["+e+"]" for e in eventos_sede_jornada(sede, jornada)]
+        terminos_eventos = ["Y_[\""+e+"\"]" for e in eventos_sede_jornada(sede, jornada)]
         cantidad_eventos = len(terminos_eventos)
         terminos_eventos = " + ".join(terminos_eventos)
-        print(("s.t. e_i_{0}_{1}_inf{{i in Equipos}}: E_[i][\"{0}\"][{1}]"
+        if cantidad_eventos == 0:
+            continue
+        print(("s.t. e_i_{0}_{1}_inf{{i in Equipos}}: E_[i, \"{0}\", {1}]"
             + "<= {2};").format(sede, jornada, terminos_eventos))
         print(("s.t. e_i_{0}_{1}_sup{{i in Equipos}}: {2} <= "
-            + "{3} * E_[i][\"{0}\"][{1}];").format(sede, jornada,
+            + "{3} * E_[i, \"{0}\", {1}];").format(sede, jornada,
             terminos_eventos, cantidad_eventos))
 
 print("s.t. excl_E_i_s_j{i in Equipos, j in Jornadas}: "
-    + "sum{s in Sedes} E_[i][s][j] <= 1;")
+    + "sum{s in Sedes} E_[i,s,j] <= 1;")
 
 
 for deporte in deportes:
     print(("s.t. final_especialista_dep{0}_{{e in FinalDeporte{0}, i in Equipos}}: "
-        + "Y_EQ_[e][i] <= Especialista[i, \"{0}\"];").format(deporte))
+        + "Y_EQ_[e, i] <= Especialista[i, \"{0}\"];").format(deporte))
 
-print("s.t. transmision{e in Eventos}: Y_[e] = sum{c in Canales} T_[e][c];")
+print("s.t. transmision{e in Eventos}: Y_[e] = sum{c in Canales} T_[e, c];")
 
 #restricciones de transmision por conjs maximales
 f = lambda x: 1 if x=='SI' else 2
@@ -302,7 +304,6 @@ coberturas=[dict(), dict(), dict(), dict(), dict()]
 with open("coberturas.csv") as f:
     reader = csv.DictReader(f)
     for row in reader:
-        print(row)
         #nos asegura que "" => [""]
         tolist = lambda string: [e for e in string.split(",")]
         coberturas[int(row["Numero"])-1] = {
