@@ -151,7 +151,7 @@ listas_evs_deporte = cargar_eventos()
 def eventos_sede_jornada(sede, jornada):
     eventos_relevantes = []
     for i in range(len(listas_evs_deporte)):
-        deporte = deportes[i] 
+        deporte = deportes[i]
         eventos = listas_evs_deporte[i]
         for evento in eventos:      #para cada evento del deporte i
             if evento[K_DIA] == jornada and evento[K_SEDE] == sede:
@@ -313,7 +313,7 @@ with open("coberturas.csv") as f:
             "cubre_deportes": tolist(row["CubreDeportes"])
         }
 
-print("param Cubre 1 2 3 4 5 :=");
+print("param Cubre: 1 2 3 4 5 :=");
 for deporte in deportes:
     cubre_deporte = ""
     for eq in range(5):
@@ -326,7 +326,7 @@ for deporte in deportes:
 
 print(";")
 # Especialistas
-print("param Especialista 1 2 3 4 5 :=")
+print("param Especialista: 1 2 3 4 5 :=")
 for deporte in deportes:
     tiene_especialistas = ""
     for eq in range(5):
