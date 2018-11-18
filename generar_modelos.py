@@ -35,17 +35,10 @@ funcional:  sum {d in deportes}(sum{e in EventosDeporte_d} (Y_e_i(Calidad_T_d + 
                                 + sum{e in Final_d} Y_e * Calidad_F_d)
 
 """
-# Cargado de archivos
-with open("constantes_calidad.csv") as f:
-    constantes = list(csv.DictReader(f))
-    # constantes: list of dict(N, Deporte, Categoría, Intercalable, Calidad base,
-    #  AumentoFinal, AumentoEspecialista)
+# Constantes del script
 
-eventos = None#...
-def eventos_sede_jornada(sede, jornada):
-    return [str(i) for i in range(2)]
-sedes = ["A", "B", "C"]
-jornadas = [1,2,3]
+sedes = ["GREEN","SAV","TECNO","URBAN","YOP"]
+jornadas = [7,8,9,10,11,12,13,14,15,16,17,18]
 deportes = ["Arqueria", "Atletismo", "Badminton", "BaileDeportivo",
     "Basquet", "VoleyPlaya", "Boxeo", "Ciclismo", "Equitacion",
     "Escalada", "Esgrima", "Futsal", "Gimnasia", "Golf",
@@ -54,8 +47,6 @@ deportes = ["Arqueria", "Atletismo", "Badminton", "BaileDeportivo",
     "Remo", "Rugby7", "Taekwondo", "Tenis", "TenisDeMesa",
     "TiroYVariantes", "Triatlon", "NavegacionAVela",
     "HandballPlaya"]
-
-#utilities
 K_CONJ = 'conj'
 K_DEP = 'id_dep'
 K_IN = 'inicio'
@@ -77,6 +68,7 @@ MOLDE_FINALES_VAR = "Y_[\"{}_{}_{}_{}\"]" #dia-deporte-hora_inicio-hora_fin
 NUM_RESTR_FINALES = 0
 K_ES_FINAL = 'es_final'
 K_DIA = 'num_dia'
+K_SEDE = 'sedes'
 HORARIOS_PATH = "horarios/horarios_{}.csv"
 
 def cargar_conjs(num_dia):
@@ -124,7 +116,8 @@ def cargar_eventos():
                         K_IN:("%.2f") % float(x[K_IN]),
                         K_F: ("%.2f") % float(x[K_F]),
                         K_ES_FINAL: int(x[K_ES_FINAL]),
-                        K_DIA: num_dia-DISPLACEMENT}
+                        K_DIA: num_dia-DISPLACEMENT,
+                        K_SEDE: x[K_SEDE]}
                 idx_depo = load[K_DEP]-1
                 #print("cargado en "+str(idx_depo))
                 lista_evs[idx_depo].append(load)
@@ -148,8 +141,23 @@ def nombre_evento(evento_dicc, deporte):
         evento_dicc[K_IN],
         evento_dicc[K_F]
     )
-#/utilities
+# Cargado de archivos
+with open("constantes_calidad.csv") as f:
+    constantes = list(csv.DictReader(f))
+    # constantes: list of dict(N, Deporte, Categoría, Intercalable, Calidad base,
+    #  AumentoFinal, AumentoEspecialista)
+
 listas_evs_deporte = cargar_eventos()
+def eventos_sede_jornada(sede, jornada):
+    eventos_relevantes = []
+    for i in range(len(listas_evs_deporte)):
+        deporte = deportes[i] 
+        eventos = listas_evs_deporte[i]
+        for evento in eventos:      #para cada evento del deporte i
+            if evento[K_DIA] == jornada and evento[K_SEDE] == sede:
+                eventos_relevantes.append(nombre_evento(evento, deporte))
+    return eventos_relevantes
+
 
 # Definicion de conjuntos
 print("set Eventos;")
@@ -193,7 +201,7 @@ print("s.t. def_Y_{e in Eventos}: Y_[e] = sum{i in Equipos}Y_[e][i];")
 for deporte in deportes:
     print(("s.t. cubr_eq_dep_{0}{{i in Equipos, e in EventosDeporte{0}}}:"
         + "Y_[e][i] <= Cubre_[i][\"{0}\"];").format(deporte))
-# TODO: conjuntos maximales
+
 for sede in sedes:
     for jornada in jornadas:
         terminos_eventos = ["Y_["+e+"]" for e in eventos_sede_jornada(sede, jornada)]
@@ -258,8 +266,8 @@ print("set Eventos := {};".format(" ".join(
 print("set Equipos := 1 2 3 4 5;")
 print("set Canales := 1 2;")
 print("set Deportes := {};".format(" ".join(["\""+deporte+"\"" for deporte in deportes])))
-# TODO: conjuntos de Sedes y Jornadas
-
+print("set Sedes := {};".format(" ".join(["\"{}\"".format(sede) for sede in sedes])))
+print("set Jornadas := {};".format(" ".join([str(j) for j in jornadas])))
 # Parámetros de calidad
 calidades = {}
 with open("constantes_calidad.csv") as f:
