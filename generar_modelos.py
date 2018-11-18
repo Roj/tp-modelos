@@ -174,14 +174,14 @@ print("set Canales;")
 print("param Calidad_T{d in Deportes};")
 print("param Calidad_E{d in Deportes};")
 print("param Calidad_F{d in Deportes};")
-print("param Especialista_{i in Equipos}{d in Deportes};")
-print("param Cubre_{i in Equipos}{d in Deportes};")
+print("param Especialista_{i in Equipos, d in Deportes};")
+print("param Cubre_{i in Equipos, d in Deportes};")
 
 # Definición de variables
 print("var Y_{e in Eventos}, binary;")
-print("var Y_{e in Eventos}{i in Equipos}, binary;")
-print("var T_{e in Eventos}{c in Canales}, binary;")
-print("var E_{i in Equipos}{s in Sedes}{j in Jornada}, binary;")
+print("var Y_{e in Eventos, i in Equipos}, binary;")
+print("var T_{e in Eventos, c in Canales}, binary;")
+print("var E_{i in Equipos, s in Sedes, j in Jornada}, binary;")
 
 # Definición de funcional
 terminos = ""
