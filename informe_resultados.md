@@ -1,4 +1,10 @@
-# Informe de resultados obtenidos
+---
+title: Informe de resultados obtenidos
+author:
+- Joaquín Torré Zaffaroni (98314)
+- Martín Errázquin (98017)
+toc: yes
+---
 
 ## Resumen de contenidos
 
