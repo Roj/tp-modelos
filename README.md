@@ -7,6 +7,12 @@ $ make informe
 
 es necesario tener instalado `pandoc`.
 
+Correr el modelo:
+```
+$ make build
+$ make run
+```
+
 
 [Link a sheets](https://docs.google.com/spreadsheets/d/1F6VCKiru-SVB5Z9eznj8Z9Qjlgw_idoXcHAuAm8JWFE/edit#gid=728835012)
 
