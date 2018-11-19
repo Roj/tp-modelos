@@ -16,6 +16,13 @@ equipos 3 y 4; lo que sugiere de que el cuello de botella de cobertura está en 
 cantidad de canales.
 * Sólo 3 deportes de los 11 tienen al menos 2 eventos sin cubrir, lo cual indica que
 hay deportes cuyos eventos son notoriamente mejores que cubrir incluso finales de otros.
+* Si bien parece extraño y se podría sospechar de un posible error dada la distribución
+de equipos, probando cambiar la calidad por transmisión base de Futsal a 200 (claro
+favorito) se observa que se lo pasa a cubrir junto con otros deportes de la sede Tecno.
+Aún así, vuelven a cubrir sólo los equipos 3 y 4.
+* De anular el equipo 3 indicando que no puede cubrir ninguna categoría, el equipo 2
+pasa a cubrir deportes, lo cual muestra que tampoco hay una imposibilidad del modelo
+en ese sentido.
 
 ## Tabla de cobertura de eventos
 
